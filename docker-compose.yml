@@ -1,0 +1,69 @@
+version: "3"
+services:
+  auth:
+    image: quay.io/keycloak/keycloak
+    hostname: keycloak
+    container_name: keycloak
+#    restart: always
+    ports:
+      - "8082:8080"
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      - proffy
+    command: ["start-dev", "--import-realm"]
+    volumes:
+      - /home/carlos-monteiro/Downloads/keycloak-geral-20230630T194332Z-001/keycloak/target/api-autenticacao-1.0-SNAPSHOT.jar:/opt/keycloak/providers/api-autenticacao-1.0-SNAPSHOT.jar
+      - /home/carlos-monteiro/Downloads/keycloak-geral-20230630T194332Z-001/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - /home/carlos-monteiro/Downloads/keycloak-geral-20230630T194332Z-001/keycloak/src/main/resources/themes/Mapfre-Cotador:/opt/keycloak/themes/Mapfre-Cotador
+#  db:
+#    image: mysql
+#    container_name: mysql
+#    volumes:
+#        - mysql-db:/home/carlos-monteiro/docker/mysql-container-test/8/volume 
+#    environment:
+#        MYSQL_ROOT_PASSWORD: "root"
+#        MYSQL_DATABASE: "docker"
+#    networks:
+#      - proffy
+#    ports:
+#        - "3306:3306"
+#volumes:
+#  mysql-db:  
+#  modulo-adm:
+#    build:
+#      context: ~/workspace/modulo-adm-mapfre
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8181:8181"
+#    depends_on:
+#      - auth
+#    networks:
+#      - aero_mapfre
+#  api-usuarios:
+#    build:
+#      context: ~/workspace/cadastro-usuarios-geral
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8181:8181"
+#    depends_on:
+#      - auth
+#    networks:
+#      - aero_mapfre
+#  db:
+#    image: mcr.microsoft.com/mssql/server:2019-latest
+#    hostname: sql-server
+#    restart: always
+#    container_name: sql-server
+#    ports:
+#      - "1433:1433"
+#    environment:
+#      - ACCEPT_EULA=Y
+#      - SA_PASSWORD=mssql123
+#      - MSSQL_PID=Express
+#    networks:
+#      - aero_mapfre
+networks:
+  proffy:
+    driver: "bridge"
