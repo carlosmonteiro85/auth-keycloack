@@ -32,11 +32,11 @@
         <div class="hero-image">
 
         </br>
-        <form action="http://localhost:8082/realms/Proffy/protocol/openid-connect/token" id="create-class" style="margin-top: 40px;">
+        <div id="create-class" style="margin-top: 40px;">
             <h1 style="color: blueviolet;">Login</h1>
         </br>
                 <div class="input-block">
-                    <label for="username" style="color: blueviolet;" >Email</label>
+                    <label for="username" style="color: blueviolet;" >Username</label>
                     <input type="text" name="username" id="username" required placeholder="Digite seu username">
                 </div>
                 </br>
@@ -46,19 +46,54 @@
                 </div>
 
                 <div class="buttons-container" style="margin: 30px 100px 50px;">
-                    <a class="study" href="\src\views\study.html" style="width: 150px;">
+                    <a class="study" onclick="realizarLogin()" style="width: 150px;">
                         <img src="${url.resourcesPath}\images\icons\cadeado.svg" alt="Estudar">
                         Entrar
                     </a>
-                    <a class="study" href="\src\views\student.html" style="width: 150px;">
+                    <a class="study" href="http://localhost:5500/src/views/student.html" style="width: 150px;">
                         <img src="${url.resourcesPath}\images\icons\study.svg" alt="Cadastrar" >
                         Cadastrar
                     </a>
                 </div>
                 <input type="hidden" name="grant_type" value="password">
                 <input type="hidden" name="client_id" value="proffy">
-            </form>
+            </div>
         </div>
     </div>
+    <script >
+    function realizarLogin() {
+    	  var url = 'http://localhost:8082/realms/Proffy/protocol/openid-connect/token';
+    	  var params = new URLSearchParams();
+    	  
+    	  const username = document.getElementById('username');
+    	  const password = document.getElementById('password');
+    	  
+    	  params.append('grant_type', 'password');
+    	  params.append('client_id', 'seu_client_id');
+    	  params.append('username', username);
+    	  params.append('password', password);
+
+    	  fetch(url, {
+    	    method: 'POST',
+    	    headers: {
+    	      'Content-Type': 'application/x-www-form-urlencoded'
+    	    },
+    	    body: params
+    	  })
+    	  .then(response => response.json())
+    	  .then(data => {
+    	    var token = data.access_token;
+    	    localStorage.setItem('token', token);
+    	    console.log('Token armazenado no localStorage:', token);
+    	    console.log(localStorage.getItem('token'))
+    	    alert(locallocalStorage.getItem('token'))
+//     	    	window.location.href = 'http://localhost:5500/src/views/index.html';
+    	  })
+    	  .catch(error => {
+    		  alert(error)
+    	    console.error('Erro ao realizar o login:', error);
+    	  });
+    	}
+    </script>
 </body>
 </html>
