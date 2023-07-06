@@ -1,0 +1,135 @@
+#page-landing{
+    background: var(--color-primary);
+}
+
+#page-landing #container{
+    color: var(--color-text-in-primary);
+}
+
+.logo-container img{
+    height: 10rem;
+}
+
+.logo-container{
+    text-align: center;
+    margin-bottom: 3.2rem;
+}
+
+.logo-container h2{
+    font-weight: 500;
+    font-size: 3.6rem;
+    line-height: height 4.6rem;
+    margin-top: 0.8rem;
+}
+
+.hero-image{
+    width: 100%;
+}
+
+.buttons-container{
+    /* para colocar um ao lado do outro e centralizar só funciona estes dois juntos*/ 
+    display: flex;
+    justify-content: center;
+    margin: 3.2rem;
+}
+
+.buttons-container a{
+    width: 30rem ;
+    height: 10.4rem;
+    border-radius: 0.8rem; /* arredonda as bordas da caixa*/ 
+    margin-right: 1.6rem;
+    font: 700 2.4rem Archivo;
+
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Alinha no centro de tudo*/ 
+
+    text-decoration:none ; /* desabilita sublinhamento altomatico*/
+
+    transition: background 0.3s; /* tranzição para mudança no :hover*/
+    
+    color: var(--color-button-text);
+}
+
+.buttons-container a img{
+    width: 4rem;
+    margin-right: 2.4rem;
+}
+
+.buttons-container a.study{
+    background: var(--color-primary-lighter);
+}
+
+/*:hover quer dizer que quando o mouse estiver encima vai acontecer uma mudança*/ 
+.buttons-container a.study:hover{
+    background: var(--color-primary-light);
+}
+
+.buttons-container a.give-classes{
+    background: var(--color-secondary);
+    margin-right: 0;
+}
+
+/*:hover quer dizer que quando o mouse estiver encima vai acontecer uma mudança*/
+.buttons-container a.give-classes:hover{
+    background: var(--color-secondary-dark);
+}
+
+.total-connections{
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.total-connections img{
+    margin-left: 0.8rem;
+}
+@media(min-width: 699px){
+
+    :root{
+        font-size: 40%;
+    }
+}
+
+/* @media é uma regra que será cumprira as condiçoes dos parenteses*/
+@media(min-width:1100px){   /* largura minima será de 1100 px*/
+    #page-landing #container{ /* largura maxima dessa pagina será de 1100 px*/
+        max-width: 1100px;  
+        display: grid;
+        grid-template-columns: 2fr 1fr 2fr; /* cria colunas divide em 3 partes  */
+        grid-template-rows: 350px 1fr ; /* cria duas linhas */
+        grid-template-areas:
+        "Proffy image image" /* Define posições estrategicas 1º linha e das 3 colunas */
+        "button button texting"; /* Define posições estrategicas na 2º linha e das 3 colunas */
+        column-gap:87px; /* Define um espaçamento entre as grids */
+        row-gap: 86px;
+    }
+    /* define onde sera a area que o conteudo ficara*/
+    .logo-container{ 
+        grid-area: Proffy;
+        text-align: initial;
+        align-self: center;  /* alinha o conteudo desse grid no Centro*/
+        margin: 0;
+    }
+
+    .logo-container img{
+        height: 127%;
+    }
+
+    .hero-image{
+        grid-area: image; 
+        height: 350px;
+    }
+    .buttons-container{
+        grid-area: button;
+        justify-content: flex-start;
+        margin: 0;
+    }
+    .total-connections{
+        grid-area: texting;
+        justify-self: end;
+        font-size: 1.2rem;
+
+    }
+}

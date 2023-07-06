@@ -16,7 +16,7 @@ services:
     volumes:
       - /home/carlos-monteiro/Downloads/keycloak-geral-20230630T194332Z-001/keycloak/target/api-autenticacao-1.0-SNAPSHOT.jar:/opt/keycloak/providers/api-autenticacao-1.0-SNAPSHOT.jar
       - /home/carlos-monteiro/Downloads/keycloak-geral-20230630T194332Z-001/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
-      - /home/carlos-monteiro/Downloads/keycloak-geral-20230630T194332Z-001/keycloak/src/main/resources/themes/Mapfre-Cotador:/opt/keycloak/themes/Mapfre-Cotador
+      - /home/carlos-monteiro/Downloads/keycloak-geral-20230630T194332Z-001/keycloak/src/main/resources/themes/Proffy:/opt/keycloak/themes/Proffy
 #  db:
 #    image: mysql
 #    container_name: mysql
