@@ -1,4 +1,4 @@
-package br.com.ebix.keycloak.user;
+package br.com.auth.keycloak.user;
 
 import java.util.List;
 import java.util.Map;

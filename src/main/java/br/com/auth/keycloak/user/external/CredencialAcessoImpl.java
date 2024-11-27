@@ -1,4 +1,4 @@
-package br.com.ebix.keycloak.user.external;
+package br.com.auth.keycloak.user.external;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -13,17 +13,17 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.keycloak.component.ComponentModel;
 
-public class UsuarioRepositoryImpl implements UsuarioRepository {
+public class CredencialAcessoImpl implements CredencialAcessoRepository {
 
   private final ComponentModel model;
 
-  public UsuarioRepositoryImpl(ComponentModel model) {
+  public CredencialAcessoImpl(ComponentModel model) {
     this.model = model;
   }
 
   @Override
-  public Usuario getUserByEmail(String email) {
-    String sql = "select ID, USERNAME, EMAIL from USUARIO where EMAIL = ?";
+  public CredencialAcesso getUserByEmail(String email) {
+    String sql = "select ID, USERNAME, EMAIL from credencial_acesso where EMAIL = ?";
     try (Connection connection = DBUtil.getConnection(model);
         PreparedStatement st = connection.prepareStatement(sql); ) {
 
@@ -36,13 +36,13 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         return null;
       }
     } catch (SQLException e) {
-      throw new UsuarioException(e.getMessage());
+      throw new CredencialException(e.getMessage());
     }
   }
 
   @Override
-  public Usuario getUserByUsername(String username) {
-    String sql = "select ID, USERNAME, EMAIL from USUARIO where USERNAME = ?";
+  public CredencialAcesso getUserByUsername(String username) {
+    String sql = "select ID, USERNAME, EMAIL from credencial_acesso where USERNAME = ?";
     try (Connection connection = DBUtil.getConnection(model);
         PreparedStatement st = connection.prepareStatement(sql); ) {
 
@@ -55,7 +55,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         return null;
       }
     } catch (SQLException e) {
-      throw new UsuarioException(e.getMessage());
+      throw new CredencialException(e.getMessage());
     }
   }
 
@@ -64,42 +64,42 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     int count = 0;
     try (Connection c = DBUtil.getConnection(model);
         Statement st = c.createStatement(); ) {
-      st.execute("select count(*) from USUARIO");
+      st.execute("select count(*) from credencial_acesso");
       ResultSet rs = st.getResultSet();
       rs.next();
       count = rs.getInt(1);
     } catch (SQLException ex) {
-      throw new UsuarioException("Database error:" + ex.getMessage(), ex);
+      throw new CredencialException("Database error:" + ex.getMessage(), ex);
     }
     return count;
   }
 
   @Override
-  public List<Usuario> getUsersStream(Integer firstResult, Integer maxResults) {
+  public List<CredencialAcesso> getUsersStream(Integer firstResult, Integer maxResults) {
     String sql =
         "select ID, USERNAME, EMAIL"
-            + " from USUARIO order by USERNAME OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+            + " from credencial_acesso order by USERNAME OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
     try (Connection c = DBUtil.getConnection(this.model);
         PreparedStatement st = c.prepareStatement(sql); ) {
       st.setInt(1, firstResult);
       st.setInt(2, maxResults);
       st.execute();
       ResultSet rs = st.getResultSet();
-      List<Usuario> users = new ArrayList<>();
+      List<CredencialAcesso> users = new ArrayList<>();
       while (rs.next()) {
         users.add(mapUser(rs));
       }
       return users;
     } catch (SQLException ex) {
-      throw new UsuarioException("Database error:" + ex.getMessage(), ex);
+      throw new CredencialException("Database error:" + ex.getMessage(), ex);
     }
   }
 
-  public List<Usuario> searchForAllUserStream(
+  public List<CredencialAcesso> searchForAllUserStream(
       String search, Integer firstResult, Integer maxResults) {
-    List<Usuario> users = new ArrayList<>();
+    List<CredencialAcesso> users = new ArrayList<>();
     String sql =
-        "select ID, USERNAME, EMAIL from USUARIO order by"
+        "select ID, USERNAME, EMAIL from credencial_acesso order by"
             + " USERNAME OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
     try (Connection c = DBUtil.getConnection(model);
@@ -113,15 +113,15 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
       }
       return users;
     } catch (SQLException ex) {
-      throw new UsuarioException("Database error:" + ex.getMessage(), ex);
+      throw new CredencialException("Database error:" + ex.getMessage(), ex);
     }
   }
 
   @Override
-  public List<Usuario> searchForUserStream(String search, Integer firstResult, Integer maxResults) {
-    List<Usuario> users = new ArrayList<>();
+  public List<CredencialAcesso> searchForUserStream(String search, Integer firstResult, Integer maxResults) {
+    List<CredencialAcesso> users = new ArrayList<>();
     String sql =
-        "select ID, USERNAME, EMAIL from USUARIO here"
+        "select ID, USERNAME, EMAIL from credencial_acesso here"
             + " USERNAME like ? order by USERNAME OFFSET ? ROWS FETCH NEXT ? ROWS"
             + " ONLY";
 
@@ -137,13 +137,13 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
       }
       return users;
     } catch (SQLException ex) {
-      throw new UsuarioException("Database error:" + ex.getMessage(), ex);
+      throw new CredencialException("Database error:" + ex.getMessage(), ex);
     }
   }
 
   @Override
   public boolean isValid(String username, String password) {
-    String sql = "select PASSWORD from USUARIO where USERNAME = ?";
+    String sql = "select PASSWORD from credencial_acesso where USERNAME = ?";
     String senhaCriptografada = criptografarString(password);
     try (Connection c = DBUtil.getConnection(model);
         PreparedStatement st = c.prepareStatement(sql); ) {
@@ -157,19 +157,19 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         return false;
       }
     } catch (SQLException ex) {
-      throw new UsuarioException("Database error:" + ex.getMessage(), ex);
+      throw new CredencialException("Database error:" + ex.getMessage(), ex);
     }
   }
 
-  private Usuario mapUser(ResultSet rs) {
+  private CredencialAcesso mapUser(ResultSet rs) {
     try {
-      Usuario usuario = new Usuario();
+      CredencialAcesso usuario = new CredencialAcesso();
       usuario.setId(rs.getLong("ID"));
       usuario.setUsername(rs.getString("USERNAME"));
       usuario.setEmail(rs.getString("EMAIL"));
       return usuario;
     } catch (SQLException ex) {
-      throw new UsuarioException(ex.getMessage());
+      throw new CredencialException(ex.getMessage());
     }
   }
 
@@ -182,7 +182,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
       final String strCripto = new String(Base64.encodeBase64(texto));
       return strCripto;
     } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
-      throw new UsuarioException(ex.getMessage(), ex);
+      throw new CredencialException(ex.getMessage(), ex);
     }
   }
 

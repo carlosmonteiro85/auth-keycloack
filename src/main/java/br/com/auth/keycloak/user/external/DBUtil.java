@@ -1,11 +1,12 @@
-package br.com.ebix.keycloak.user.external;
+package br.com.auth.keycloak.user.external;
 
+
+import static br.com.auth.keycloak.user.Constants.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static br.com.ebix.keycloak.user.Constants.*;
 import org.keycloak.component.ComponentModel;
 
 public class DBUtil {

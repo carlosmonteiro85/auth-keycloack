@@ -17,9 +17,7 @@
     <link rel="stylesheet" href="${url.resourcesPath}/styles/partials/forms.css">
     <link rel="stylesheet" href="${url.resourcesPath}/styles/partials/give-classes.css">
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&amp;family=Poppins:wght@400;600&amp;display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&amp;family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet">
 
 </head>
 
@@ -65,11 +63,11 @@
     	  var url = 'http://localhost:8082/realms/Proffy/protocol/openid-connect/token';
     	  var params = new URLSearchParams();
     	  
-    	  const username = document.getElementById('username');
-    	  const password = document.getElementById('password');
+          const username = document.getElementById('username').value; 
+          const password = document.getElementById('password').value; 
     	  
     	  params.append('grant_type', 'password');
-    	  params.append('client_id', 'seu_client_id');
+    	  params.append('client_id', 'proffy');
     	  params.append('username', username);
     	  params.append('password', password);
 
@@ -82,16 +80,16 @@
     	  })
     	  .then(response => response.json())
     	  .then(data => {
+
     	    var token = data.access_token;
+    	    var refreshToken = data.refresh_token;
+
     	    localStorage.setItem('token', token);
-    	    console.log('Token armazenado no localStorage:', token);
-    	    console.log(localStorage.getItem('token'))
-    	    alert(locallocalStorage.getItem('token'))
+    	    localStorage.setItem('refresh_token', refreshToken);
 //     	    	window.location.href = 'http://localhost:5500/src/views/index.html';
     	  })
     	  .catch(error => {
-    		  alert(error)
-    	    console.error('Erro ao realizar o login:', error);
+    		  alert('Erro ao realizar o login:' + error)
     	  });
     	}
     </script>

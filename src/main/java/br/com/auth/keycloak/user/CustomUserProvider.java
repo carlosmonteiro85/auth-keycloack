@@ -1,26 +1,12 @@
-package br.com.ebix.keycloak.user;
+package br.com.auth.keycloak.user;
 
-import br.com.ebix.keycloak.user.external.DBUtil;
-import br.com.ebix.keycloak.user.external.Usuario;
-import br.com.ebix.keycloak.user.external.UsuarioRepository;
-import br.com.ebix.keycloak.user.external.UsuarioRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.apache.commons.codec.binary.Base64;
 import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.CredentialInput;
 import org.keycloak.credential.CredentialInputUpdater;
@@ -36,6 +22,10 @@ import org.keycloak.storage.user.UserLookupProvider;
 import org.keycloak.storage.user.UserQueryProvider;
 import org.keycloak.storage.user.UserRegistrationProvider;
 
+import br.com.auth.keycloak.user.external.CredencialAcesso;
+import br.com.auth.keycloak.user.external.CredencialAcessoImpl;
+import br.com.auth.keycloak.user.external.CredencialAcessoRepository;
+
 @Slf4j
 public class CustomUserProvider
     implements UserStorageProvider,
@@ -47,14 +37,14 @@ public class CustomUserProvider
 
   private final KeycloakSession session;
   private final ComponentModel model;
-  private final UsuarioRepository repository;
+  private final CredencialAcessoRepository repository;
 
   protected Map<String, UserModel> loadedUsers = new HashMap<>();
 
   public CustomUserProvider(KeycloakSession session, ComponentModel model) {
     this.session = session;
     this.model = model;
-    this.repository = new UsuarioRepositoryImpl(model);
+    this.repository = new CredencialAcessoImpl(model);
   }
 
   @Override
@@ -65,8 +55,8 @@ public class CustomUserProvider
     log.info("[I48] getUserByEmail({})", email);
     UserModel adapter = loadedUsers.get(email);
     if (adapter == null) {
-      Usuario usuario = repository.getUserByEmail(email);
-      adapter = new UserAdapter(session, realm, model, usuario);
+      CredencialAcesso credencialAcesso = repository.getUserByEmail(email);
+      adapter = new UserAdapter(session, realm, model, credencialAcesso);
       loadedUsers.put(email, adapter);
     }
     return adapter;
@@ -84,8 +74,8 @@ public class CustomUserProvider
     log.info("[I41] getUserByUsername({})", username);
     UserModel adapter = loadedUsers.get(username);
     if (adapter == null) {
-      Usuario usuario = repository.getUserByUsername(username);
-      adapter = new UserAdapter(session, realm, model, usuario);
+      CredencialAcesso credencialAcesso = repository.getUserByUsername(username);
+      adapter = new UserAdapter(session, realm, model, credencialAcesso);
       loadedUsers.put(username, adapter);
     }
     return adapter;
@@ -100,8 +90,8 @@ public class CustomUserProvider
   @Override
   public Stream<UserModel> getUsersStream(RealmModel realm, Integer firstResult, Integer maxResults) {
     log.info("[I113] getUsers: realm={}", realm.getName());
-    List<Usuario> usuarios = repository.getUsersStream(firstResult, maxResults);
-    return usuarios.stream().map(usuario -> new UserAdapter(session, realm, model, usuario));
+    List<CredencialAcesso> credenciaislAcesso = repository.getUsersStream(firstResult, maxResults);
+    return credenciaislAcesso.stream().map(credencialAcesso -> new UserAdapter(session, realm, model, credencialAcesso));
   }
 
   @Override
@@ -125,7 +115,7 @@ public class CustomUserProvider
           .map(user -> new UserAdapter(session, realm, model, user));
     }
     return repository.searchForUserStream(search, firstResult, maxResults).stream()
-        .map(usuario -> new UserAdapter(session, realm, model, usuario));
+        .map(credencialAcesso -> new UserAdapter(session, realm, model, credencialAcesso));
   }
 
   @Override
@@ -139,7 +129,7 @@ public class CustomUserProvider
       RealmModel realm, Map<String, String> params, Integer firstResult, Integer maxResults) {
     log.info("searchForUserStream, search={}, first={}, max={}", params, firstResult, maxResults);
     return repository.searchForUserStream(null, firstResult, maxResults).stream()
-        .map(usuario -> new UserAdapter(session, realm, model, usuario));
+        .map(credencialAcesso -> new UserAdapter(session, realm, model, credencialAcesso));
   }
 
   @Override

@@ -1535,8 +1535,8 @@
           "com.mysql.cj.jdbc.Driver": [
             "com.mysql.cj.jdbc.Driver"
           ],
-          "jdbc:mysql://192.168.100.6:3306/PROFFY?createDatabaseIfNotExist=true&serverTimezone=GMT-3": [
-            "jdbc:mysql://192.168.100.6:3306/PROFFY?createDatabaseIfNotExist=true&serverTimezone=GMT-3"
+          "jdbc:mysql://192.168.100.138:3306/auth-keycloak?createDatabaseIfNotExist=true&serverTimezone=GMT-3": [
+            "jdbc:mysql://192.168.100.138:3306/auth-keycloak?createDatabaseIfNotExist=true&serverTimezone=GMT-3"
           ],
           "enabled": [
             "true"

@@ -1,10 +1,10 @@
-package br.com.ebix.keycloak.user.external;
+package br.com.auth.keycloak.user.external;
 
 import java.util.List;
 import lombok.Data;
 
 @Data
-public class Usuario {
+public class CredencialAcesso {
 
   private Long id;
   private String username;

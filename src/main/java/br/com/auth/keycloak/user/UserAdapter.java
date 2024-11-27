@@ -1,5 +1,4 @@
-package br.com.ebix.keycloak.user;
-
+package br.com.auth.keycloak.user;
 
 import java.util.List;
 import java.util.Map;
@@ -19,37 +18,37 @@ import org.keycloak.models.UserModel;
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.adapter.AbstractUserAdapter;
 
-import br.com.ebix.keycloak.user.external.Usuario;
+import br.com.auth.keycloak.user.external.CredencialAcesso;
 
 public class UserAdapter extends AbstractUserAdapter{
 
-  private final Usuario usuario;
+  private final CredencialAcesso credencialAcesso;
 
   public UserAdapter(
-      KeycloakSession session, RealmModel realm, ComponentModel model, Usuario usuario) {
+      KeycloakSession session, RealmModel realm, ComponentModel model, CredencialAcesso credencialAcesso) {
     super(session, realm, model);
-    this.storageId = new StorageId(storageProviderModel.getId(), usuario.getUsername());
-    this.usuario = usuario;
+    this.storageId = new StorageId(storageProviderModel.getId(), credencialAcesso.getUsername());
+    this.credencialAcesso = credencialAcesso;
   }
 
   @Override
   public String getUsername() {
-    return usuario.getUsername();
+    return credencialAcesso.getUsername();
   }
 
   @Override
   public String getFirstName() {
-    return usuario.getFirstName();
+    return credencialAcesso.getFirstName();
   }
   
   @Override
   public String getLastName() {
-    return usuario.getLastName();
+    return credencialAcesso.getLastName();
   }
 
   @Override
   public String getEmail() {
-    return usuario.getEmail();
+    return credencialAcesso.getEmail();
   }
 
   @Override
@@ -81,16 +80,16 @@ public class UserAdapter extends AbstractUserAdapter{
 
   @Override
   protected Set<GroupModel> getGroupsInternal() {
-    if (usuario.getRoles() != null) {
-      return usuario.getGroups().stream().map(UserGroupModel::new).collect(Collectors.toSet());
+    if (credencialAcesso.getRoles() != null) {
+      return credencialAcesso.getGroups().stream().map(UserGroupModel::new).collect(Collectors.toSet());
     }
     return Set.of();
   }
 
   @Override
   protected Set<RoleModel> getRoleMappingsInternal() {
-    if (usuario.getRoles() != null) {
-      return usuario.getRoles().stream().map(roleName -> new UserRoleModel(roleName, realm)).collect(Collectors.toSet());
+    if (credencialAcesso.getRoles() != null) {
+      return credencialAcesso.getRoles().stream().map(roleName -> new UserRoleModel(roleName, realm)).collect(Collectors.toSet());
     }
     return Set.of();
   }
