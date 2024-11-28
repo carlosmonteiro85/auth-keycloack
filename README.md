@@ -14,8 +14,8 @@ Na raiz do projeto, crie o banco de dados chamado auth-keycloak.
 Execute o script SQL init.sql localizado na raiz do projeto para criar as tabelas de credenciais e adicionar um usuário de teste.
 
 ## Configuracao da base de dados
-*Na classe Constants, insira as informações de conexão com o banco.
-*No arquivo realm-export.json, no objeto org.keycloak.storage.UserStorageProvider, insira as configurações de conexão do banco.
+* Na classe Constants, insira as informações de conexão com o banco.
+* No arquivo realm-export.json, no objeto org.keycloak.storage.UserStorageProvider, insira as configurações de conexão do banco.
 
 * Obs: neste arquivo tem os dados do realm que será importado, nome do realm, url de redirect, roles.... e várias configurações que pode ser alterada de acordo com a necessidade.
 
