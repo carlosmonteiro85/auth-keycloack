@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "aad00a5e-c182-410d-a686-a9e7e942bb11",
+		"name": "Auth - Keycloak",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14462470"
+	},
+	"item": [
+		{
+			"name": "token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "proffy",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "administrador",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "791222",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "openid",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8082/realms/Proffy/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"realms",
+						"Proffy",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "refresh_token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "proffy",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "refresh_token",
+							"type": "text"
+						},
+						{
+							"key": "refresh_token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIxMTViOTNjZS1jZDAxLTQwMDYtYTNiYS0wZTViMDgxNjM4YTYifQ.eyJleHAiOjE3MzI3MTU4ODcsImlhdCI6MTczMjcxNDA4NywianRpIjoiNWY3NjQ3MTEtZGE1Ni00NzJkLThlNDAtOWViYzQ4ZGRiODg0IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgyL3JlYWxtcy9Qcm9mZnkiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjgwODIvcmVhbG1zL1Byb2ZmeSIsInN1YiI6ImY6ZGY2Nzc4YjYtNWI0NC00ZjFhLWI4NzItYzFiOThkOTQzOWM2OmFkbWluaXN0cmFkb3IiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoicHJvZmZ5Iiwic2Vzc2lvbl9zdGF0ZSI6ImNhM2YwN2I1LTYwNGMtNDA3ZC05NDQyLWI4MzQxMDIxNjc4NyIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiJjYTNmMDdiNS02MDRjLTQwN2QtOTQ0Mi1iODM0MTAyMTY3ODcifQ.6PGwalPLLCwhIIYjAb7ndwz-BxY3THpuXkuCSWe3Uhk",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8082/realms/Proffy/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"realms",
+						"Proffy",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
