@@ -1,4 +1,4 @@
-package br.com.auth.keycloak.user;
+package br.com.auth.keycloak.user.dominio;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import org.keycloak.storage.ReadOnlyException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UserGroupModel implements GroupModel.Streams {
+public class UserGroupModel implements GroupModel {
 
 	private final String name;
 

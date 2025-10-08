@@ -1,4 +1,4 @@
-package br.com.auth.keycloak.user;
+package br.com.auth.keycloak.user.util;
 
 import lombok.experimental.UtilityClass;
 

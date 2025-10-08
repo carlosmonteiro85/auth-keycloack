@@ -1,2 +1,2 @@
-br.com.auth.keycloak.user.CustomUserProviderFactory
+br.com.auth.keycloak.user.provider.CustomUserProviderFactory
 

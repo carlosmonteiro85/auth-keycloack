@@ -1,4 +1,4 @@
-package br.com.auth.keycloak.user.external;
+package br.com.auth.keycloak.user.exception;
 
 public class CredencialException extends RuntimeException {
   private static final long serialVersionUID = 1L;

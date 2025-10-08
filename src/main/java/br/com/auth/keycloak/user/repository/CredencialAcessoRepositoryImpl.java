@@ -1,4 +1,4 @@
-package br.com.auth.keycloak.user.external;
+package br.com.auth.keycloak.user.repository;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -13,11 +13,15 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.keycloak.component.ComponentModel;
 
-public class CredencialAcessoImpl implements CredencialAcessoRepository {
+import br.com.auth.keycloak.user.dominio.CredencialAcesso;
+import br.com.auth.keycloak.user.exception.CredencialException;
+import br.com.auth.keycloak.user.util.DBUtil;
+
+public class CredencialAcessoRepositoryImpl implements CredencialAcessoRepository {
 
   private final ComponentModel model;
 
-  public CredencialAcessoImpl(ComponentModel model) {
+  public CredencialAcessoRepositoryImpl(ComponentModel model) {
     this.model = model;
   }
 
@@ -25,7 +29,7 @@ public class CredencialAcessoImpl implements CredencialAcessoRepository {
   public CredencialAcesso getUserByEmail(String email) {
     String sql = "select ID, USERNAME, EMAIL from credencial_acesso where EMAIL = ?";
     try (Connection connection = DBUtil.getConnection(model);
-        PreparedStatement st = connection.prepareStatement(sql); ) {
+        PreparedStatement st = connection.prepareStatement(sql);) {
 
       st.setString(1, email);
       st.execute();
@@ -44,7 +48,7 @@ public class CredencialAcessoImpl implements CredencialAcessoRepository {
   public CredencialAcesso getUserByUsername(String username) {
     String sql = "select ID, USERNAME, EMAIL from credencial_acesso where USERNAME = ?";
     try (Connection connection = DBUtil.getConnection(model);
-        PreparedStatement st = connection.prepareStatement(sql); ) {
+        PreparedStatement st = connection.prepareStatement(sql);) {
 
       st.setString(1, username);
       st.execute();
@@ -80,7 +84,7 @@ public class CredencialAcessoImpl implements CredencialAcessoRepository {
         "select ID, USERNAME, EMAIL"
             + " from credencial_acesso order by USERNAME OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
     try (Connection c = DBUtil.getConnection(this.model);
-        PreparedStatement st = c.prepareStatement(sql); ) {
+        PreparedStatement st = c.prepareStatement(sql);) {
       st.setInt(1, firstResult);
       st.setInt(2, maxResults);
       st.execute();
@@ -103,7 +107,7 @@ public class CredencialAcessoImpl implements CredencialAcessoRepository {
             + " USERNAME OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
     try (Connection c = DBUtil.getConnection(model);
-        PreparedStatement st = c.prepareStatement(sql); ) {
+        PreparedStatement st = c.prepareStatement(sql);) {
       st.setInt(1, firstResult);
       st.setInt(2, maxResults);
       st.execute();
@@ -126,7 +130,7 @@ public class CredencialAcessoImpl implements CredencialAcessoRepository {
             + " ONLY";
 
     try (Connection c = DBUtil.getConnection(model);
-        PreparedStatement st = c.prepareStatement(sql); ) {
+        PreparedStatement st = c.prepareStatement(sql);) {
       st.setString(1, search);
       st.setInt(2, firstResult);
       st.setInt(3, maxResults);
@@ -143,10 +147,10 @@ public class CredencialAcessoImpl implements CredencialAcessoRepository {
 
   @Override
   public boolean isValid(String username, String password) {
-    String sql = "select PASSWORD from credencial_acesso where USERNAME = ?";
+    String sql = "select password from credencial_acesso where username = ?";
     String senhaCriptografada = criptografarString(password);
     try (Connection c = DBUtil.getConnection(model);
-        PreparedStatement st = c.prepareStatement(sql); ) {
+        PreparedStatement st = c.prepareStatement(sql);) {
       st.setString(1, username);
       st.execute();
       ResultSet rs = st.getResultSet();
@@ -161,26 +165,54 @@ public class CredencialAcessoImpl implements CredencialAcessoRepository {
     }
   }
 
-  private CredencialAcesso mapUser(ResultSet rs) {
-    try {
-      CredencialAcesso usuario = new CredencialAcesso();
-      usuario.setId(rs.getLong("ID"));
-      usuario.setUsername(rs.getString("USERNAME"));
-      usuario.setEmail(rs.getString("EMAIL"));
-      return usuario;
-    } catch (SQLException ex) {
-      throw new CredencialException(ex.getMessage());
-    }
+  private CredencialAcesso mapUser(ResultSet rs) throws SQLException {
+    long id = rs.getLong("ID");
+    return CredencialAcesso.builder()
+        .id(id)
+        .username(rs.getString("USERNAME"))
+        .email(rs.getString("EMAIL"))
+        .roles(getRolesByUserId(id))
+        .build();
   }
+
+  private List<String> getRolesByUserId(Long userId) {
+    String sql = "SELECT role FROM credencial_role WHERE credencial_id = ?";
+    List<String> roles = new ArrayList<>();
+    try (Connection c = DBUtil.getConnection(model);
+        PreparedStatement st = c.prepareStatement(sql)) {
+      st.setLong(1, userId);
+      ResultSet rs = st.executeQuery();
+      while (rs.next()) {
+        roles.add(rs.getString("ROLE"));
+      }
+    } catch (SQLException e) {
+      throw new CredencialException("Erro ao buscar roles: " + e.getMessage(), e);
+    }
+    return roles;
+  }
+
+  // private List<String> getGruposByUserId(Long userId) {
+  //   String sql = "SELECT GRUPO FROM CREDENCIAL_GRUPO WHERE CREDENCIAL_ID = ?";
+  //   List<String> grupos = new ArrayList<>();
+  //   try (Connection c = DBUtil.getConnection(model);
+  //       PreparedStatement st = c.prepareStatement(sql)) {
+  //     st.setLong(1, userId);
+  //     ResultSet rs = st.executeQuery();
+  //     while (rs.next()) {
+  //       grupos.add(rs.getString("GRUPO"));
+  //     }
+  //   } catch (SQLException e) {
+  //     throw new CredencialException("Erro ao buscar grupos: " + e.getMessage(), e);
+  //   }
+  //   return grupos;
+  // }
 
   private String criptografarString(final String strOriginal) {
     try {
       final byte[] plainText = strOriginal.getBytes("UTF-8");
-      // Transforma o digest em uma String legível
       MessageDigest md1 = MessageDigest.getInstance("SHA-512");
       byte[] texto = md1.digest(plainText);
-      final String strCripto = new String(Base64.encodeBase64(texto));
-      return strCripto;
+      return new String(Base64.encodeBase64(texto));
     } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
       throw new CredencialException(ex.getMessage(), ex);
     }

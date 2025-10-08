@@ -1,7 +1,8 @@
-package br.com.auth.keycloak.user;
+package br.com.auth.keycloak.user.dominio;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,14 +19,11 @@ import org.keycloak.models.UserModel;
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.adapter.AbstractUserAdapter;
 
-import br.com.auth.keycloak.user.external.CredencialAcesso;
-
-public class UserAdapter extends AbstractUserAdapter{
+public class UserAdapter extends AbstractUserAdapter {
 
   private final CredencialAcesso credencialAcesso;
 
-  public UserAdapter(
-      KeycloakSession session, RealmModel realm, ComponentModel model, CredencialAcesso credencialAcesso) {
+  public UserAdapter(KeycloakSession session, RealmModel realm, ComponentModel model, CredencialAcesso credencialAcesso) {
     super(session, realm, model);
     this.storageId = new StorageId(storageProviderModel.getId(), credencialAcesso.getUsername());
     this.credencialAcesso = credencialAcesso;
@@ -40,7 +38,7 @@ public class UserAdapter extends AbstractUserAdapter{
   public String getFirstName() {
     return credencialAcesso.getFirstName();
   }
-  
+
   @Override
   public String getLastName() {
     return credencialAcesso.getLastName();
@@ -80,7 +78,7 @@ public class UserAdapter extends AbstractUserAdapter{
 
   @Override
   protected Set<GroupModel> getGroupsInternal() {
-    if (credencialAcesso.getRoles() != null) {
+    if (credencialAcesso.getRoles() != null && Objects.nonNull(credencialAcesso.getGroups())) {
       return credencialAcesso.getGroups().stream().map(UserGroupModel::new).collect(Collectors.toSet());
     }
     return Set.of();
@@ -89,10 +87,40 @@ public class UserAdapter extends AbstractUserAdapter{
   @Override
   protected Set<RoleModel> getRoleMappingsInternal() {
     if (credencialAcesso.getRoles() != null) {
-      return credencialAcesso.getRoles().stream().map(roleName -> new UserRoleModel(roleName, realm)).collect(Collectors.toSet());
+      return credencialAcesso.getRoles().stream().map(roleName -> new UserRoleModel(roleName, realm))
+          .collect(Collectors.toSet());
     }
     return Set.of();
   }
 
+  @Override
+  public Stream<RoleModel> getRealmRoleMappingsStream() {
+    return credencialAcesso.getRoles().stream()
+        .map(roleName -> {
+          RoleModel role = realm.getRole(roleName);
+          if (role == null) {
+            role = realm.addRole(roleName);
+          }
+          return role;
+        });
+  }
 
+  /* 
+  @Override
+  public Stream<GroupModel> getGroupsStream() {
+    return credencialAcesso.getGrupos().stream()
+        .map(groupName -> {
+          GroupModel group = realm.getGroupsStream()
+              .filter(g -> g.getName().equals(groupName))
+              .findFirst()
+              .orElseGet(() -> realm.createGroup(groupName));
+          return group;
+        });
+  }
+  */
+
+  @Override
+  public boolean hasRole(RoleModel role) {
+    return credencialAcesso.getRoles() != null && credencialAcesso.getRoles().contains(role.getName());
+  }
 }

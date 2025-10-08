@@ -1,7 +1,7 @@
-package br.com.auth.keycloak.user.external;
+package br.com.auth.keycloak.user.util;
 
 
-import static br.com.auth.keycloak.user.Constants.*;
+import static br.com.auth.keycloak.user.util.Constants.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,6 +9,10 @@ import java.sql.SQLException;
 
 import org.keycloak.component.ComponentModel;
 
+import br.com.auth.keycloak.user.exception.DBException;
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class DBUtil {
 
     public static Connection getConnection(ComponentModel config) throws SQLException {
@@ -16,7 +20,7 @@ public class DBUtil {
         try {
             Class.forName(driverClass);
         } catch (ClassNotFoundException nfe) {
-            throw new RuntimeException("Invalid JDBC driver: "
+            throw new DBException("Invalid JDBC driver: "
                     + driverClass +
                     ". Please check if your driver is properly installer");
         }

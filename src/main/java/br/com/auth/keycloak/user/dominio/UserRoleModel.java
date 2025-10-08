@@ -1,4 +1,4 @@
-package br.com.auth.keycloak.user;
+package br.com.auth.keycloak.user.dominio;
 
 import java.util.List;
 import java.util.Map;
@@ -9,13 +9,15 @@ import org.keycloak.models.RoleContainerModel;
 import org.keycloak.models.RoleModel;
 import org.keycloak.storage.ReadOnlyException;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserRoleModel implements RoleModel{
 
-  private final String nome;
-  private final RealmModel realm;
+  private String nome;
+  private RealmModel realm;
 
   @Override
   public void addCompositeRole(RoleModel roleModel) {
@@ -54,7 +56,7 @@ public class UserRoleModel implements RoleModel{
 
   @Override
   public String getId() {
-    return nome;
+    return getName();
   }
 
   @Override
@@ -106,7 +108,4 @@ public class UserRoleModel implements RoleModel{
   public void setSingleAttribute(String s, String s1) {
    throw new ReadOnlyException("role is read only"); 
   }
-
-
-  
 }

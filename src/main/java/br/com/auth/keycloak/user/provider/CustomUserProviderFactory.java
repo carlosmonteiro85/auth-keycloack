@@ -1,4 +1,4 @@
-package br.com.auth.keycloak.user;
+package br.com.auth.keycloak.user.provider;
 
 import java.util.List;
 
@@ -10,6 +10,8 @@ import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.provider.ProviderConfigurationBuilder;
 import org.keycloak.storage.UserStorageProviderFactory;
 import org.keycloak.utils.StringUtil;
+
+import br.com.auth.keycloak.user.util.Constants;
 
 public class CustomUserProviderFactory implements UserStorageProviderFactory<CustomUserProvider>{
   

@@ -1,9 +1,8 @@
-package br.com.auth.keycloak.user;
+package br.com.auth.keycloak.user.provider;
 
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -16,15 +15,17 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.credential.PasswordCredentialModel;
+import org.keycloak.storage.ReadOnlyException;
 import org.keycloak.storage.StorageId;
 import org.keycloak.storage.UserStorageProvider;
 import org.keycloak.storage.user.UserLookupProvider;
 import org.keycloak.storage.user.UserQueryProvider;
 import org.keycloak.storage.user.UserRegistrationProvider;
 
-import br.com.auth.keycloak.user.external.CredencialAcesso;
-import br.com.auth.keycloak.user.external.CredencialAcessoImpl;
-import br.com.auth.keycloak.user.external.CredencialAcessoRepository;
+import br.com.auth.keycloak.user.dominio.CredencialAcesso;
+import br.com.auth.keycloak.user.dominio.UserAdapter;
+import br.com.auth.keycloak.user.repository.CredencialAcessoRepository;
+import br.com.auth.keycloak.user.repository.CredencialAcessoRepositoryImpl;
 
 @Slf4j
 public class CustomUserProvider
@@ -44,11 +45,13 @@ public class CustomUserProvider
   public CustomUserProvider(KeycloakSession session, ComponentModel model) {
     this.session = session;
     this.model = model;
-    this.repository = new CredencialAcessoImpl(model);
+    this.repository = new CredencialAcessoRepositoryImpl(model);
   }
 
   @Override
-  public void close() {}
+  public void close() {
+    throw new ReadOnlyException("Não há implementação para esse método");
+  }
 
   @Override
   public UserModel getUserByEmail(RealmModel realm, String email) {
@@ -79,19 +82,6 @@ public class CustomUserProvider
       loadedUsers.put(username, adapter);
     }
     return adapter;
-  }
-
-  @Override
-  public Stream<UserModel> getUsersStream(RealmModel realm) {
-    log.info("[I113] getUsers: realm={}", realm.getName());
-    return getUsersStream(realm, 1, 5000);
-  }
-
-  @Override
-  public Stream<UserModel> getUsersStream(RealmModel realm, Integer firstResult, Integer maxResults) {
-    log.info("[I113] getUsers: realm={}", realm.getName());
-    List<CredencialAcesso> credenciaislAcesso = repository.getUsersStream(firstResult, maxResults);
-    return credenciaislAcesso.stream().map(credencialAcesso -> new UserAdapter(session, realm, model, credencialAcesso));
   }
 
   @Override
@@ -134,6 +124,7 @@ public class CustomUserProvider
 
   @Override
   public void disableCredentialType(RealmModel arg0, UserModel arg1, String arg2) {
+    throw new ReadOnlyException("Não há implementação para esse método");
   }
 
   @Override
