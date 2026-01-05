@@ -15,11 +15,11 @@ services:
       - start-dev
       - --import-realm
     volumes:
-      - /home/monteiro/workspace/auth-keycloack/target/api-autenticacao-1.0-SNAPSHOT.jar:/opt/keycloak/providers/api-autenticacao-1.0-SNAPSHOT.jar
-      - /home/monteiro/workspace/auth-keycloack/realm-export.json:/opt/keycloak/data/import/realm-export.json
-      - /home/monteiro/workspace/auth-keycloack/src/main/resources/themes/Proffy:/opt/keycloak/themes/Proffy
+      - /home/monteiro/auth-keycloak/auth-keycloack/target/api-autenticacao-1.0-SNAPSHOT.jar:/opt/keycloak/providers/api-autenticacao-1.0-SNAPSHOT.jar
+      - /home/monteiro/auth-keycloak/auth-keycloack/realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - /home/monteiro/auth-keycloak/auth-keycloack/src/main/resources/themes/Proffy:/opt/keycloak/themes/Proffy
     networks:
       - rede_monteiro  
 networks:
   rede_monteiro:
-    driver: "bridge"
+    external: true
