@@ -1,9 +1,9 @@
 pipeline {
     agent any 
     environment {
-        DOCKER_IMAGE_BACK = "85devs/config-server"
+        DOCKER_IMAGE_BACK = "85devs/auth-keycloak"
         DOCKER_TAG = "v${BUILD_NUMBER}"
-        CONTAINER_NAME_BACK = "config-server"
+        CONTAINER_NAME_BACK = "auth-keycloak"
     }
 
     stages {
@@ -13,11 +13,20 @@ pipeline {
             }
         }
 
-        stage('Run Docker Compose') {
+        stage('Build') {
             steps {
                 script {
                     sh "pwd"
                     sh "ls -la"
+                    echo "Buildando com maven"
+                    sh "mvn clean install"
+                }
+            }
+        }
+
+        stage('Run Docker Compose') {
+            steps {
+                script {
                     echo "Parando e removendo qualquer contêiner existente com os nomes: ${CONTAINER_NAME_BACK}"
                     sh "docker-compose down || true"
                     echo "Buildando o Docker Compose"
